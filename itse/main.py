@@ -4,16 +4,17 @@ from starlette.routing import Route
 
 import uvicorn
 
+import routes
 
-async def homepage(request):
+async def login_page(request):
     return JSONResponse({'hello': 'world'})
-
 
 def create_app():
     app = Starlette(debug=True, routes=[
-        Route('/', homepage),
+        Route('/auth', routes.Auth.get),
     ])
     return app
+
 
 app = create_app()
 

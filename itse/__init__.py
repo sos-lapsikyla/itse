@@ -1,1 +1,3 @@
-__version__ = '0.1.0'
+from .version import __version__
+
+from .auth_router import AuthRouter
