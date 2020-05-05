@@ -1,10 +1,10 @@
+import routes
+
 from starlette.applications import Starlette
 from starlette.responses import JSONResponse
 from starlette.routing import Route
 
 import uvicorn
-
-import routes
 
 
 async def login_page(request):

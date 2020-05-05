@@ -2,6 +2,7 @@
 # C -> mccabe, C for complexity
 # [W, E] -> pycodestyle, PEP8
 # F -> pyflakes, finds broken python
-# BLK -> Black
-select = BLK,C,E,F,W
+# BLK -> Black, flake8-black
+# I -> import order, flake8-import-order
+select = BLK,C,E,F,I,W
 max-complexity = 10
