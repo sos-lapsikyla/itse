@@ -4,5 +4,12 @@
 # F -> pyflakes, finds broken python
 # BLK -> Black, flake8-black
 # I -> import order, flake8-import-order
-select = BLK,C,E,F,I,W
+# B bugbear, flake8-bugbear
+# B9 insane bugbear warnings, flake8-bugbear
+select = B,B9,BLK,C,E,F,I,W
 max-complexity = 10
+application-import-names = itse,auth
+# E203 whitespace before ':'
+# W503 Line break before binary operator
+ignore = E203,E501,W503
+max-line-length = 80
