@@ -12,7 +12,7 @@ async def login_page(request):
 
 
 def create_app():
-    app = Starlette(debug=True, routes=[Route("/auth", routes.Auth.get),])
+    app = Starlette(debug=True, routes=[Route("/auth", routes.Auth.get)])
     return app
 
 

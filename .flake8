@@ -1,0 +1,7 @@
+[flake8]
+# C -> mccabe, C for complexity
+# [W, E] -> pycodestyle, PEP8
+# F -> pyflakes, finds broken python
+# BLK -> Black
+select = BLK,C,E,F,W
+max-complexity = 10
