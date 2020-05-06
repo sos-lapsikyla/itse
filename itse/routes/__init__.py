@@ -1,3 +1,3 @@
-from .auth import Auth
+from . import auth
 
-__all__ = ["Auth"]
+__all__ = ["auth"]

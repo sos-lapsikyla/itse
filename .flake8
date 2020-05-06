@@ -6,7 +6,8 @@
 # I -> import order, flake8-import-order
 # B bugbear, flake8-bugbear
 # B9 insane bugbear warnings, flake8-bugbear
-select = B,B9,BLK,C,E,F,I,W
+# ANN flake8 annotations
+select = ANN,B,B9,BLK,C,E,F,I,W
 max-complexity = 10
 application-import-names = itse,auth
 # E203 whitespace before ':'
