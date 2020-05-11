@@ -12,5 +12,6 @@ max-complexity = 10
 application-import-names = itse,auth
 # E203 whitespace before ':'
 # W503 Line break before binary operator
-ignore = E203,E501,W503
+# ANN101 Missing type annotation for self in method
+ignore = E203,E501,W503, ANN101
 max-line-length = 80
