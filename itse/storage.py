@@ -1,4 +1,13 @@
-from typing import List, Protocol, TypeVar
+from typing import (
+    Callable,
+    Dict,
+    List,
+    Literal,
+    NamedTuple,
+    Protocol,
+    TypeVar,
+    Union,
+)
 
 
 class Connection(Protocol):
@@ -9,34 +18,39 @@ class Connection(Protocol):
         ...
 
 
+StrKind: Literal["StrKind"] = "StrKind"
+IntKind: Literal["IntKind"] = "IntKind"
+BoolKind: Literal["BoolKind"] = "BoolKind"
+
+Kind = Union[StrKind, IntKind, BoolKind]
+
+
+class Field(NamedTuple):
+    kind: Kind
+    required: bool
+    unique: bool
+
+
+class Schema(NamedTuple):
+    name: str
+    fields: Dict[str, Field]
+
+
 A = TypeVar("A")
 
 
 class Storage(Protocol[A]):
-    async def read_all(self) -> List[A]:
+    async def items(self) -> List[A]:
         ...
 
-    async def read_one(self, identifier: str) -> A:
+    async def get(self, identifier: str) -> A:
         ...
 
-    async def create(self, a: A) -> str:
-        """Returns identifier str."""
+    async def add(self, a: A) -> str:
         ...
 
     async def update(self, identifier: str, a: A) -> None:
         ...
 
-    async def delete(self, identifier: str) -> None:
-        ...
 
-
-#    def unique
-#    def constant
-#    def finalize
-
-
-# unique(constant(base_type))
-# constant(unique(base_type))
-# base_type.less_than.more_than.eq
-
-# Schema = Mapping[str, Val]
+StorageMaker = Callable([Connection, Schema], Storage)

@@ -2,6 +2,8 @@ run:
 	uvicorn itse:app
 
 lint:
-	black -l 80 --check itse/
+	poetry run black itse
+	poetry run flake8
+	poetry run mypy
 safety-check:
 	poetry run safety check
