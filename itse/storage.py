@@ -6,7 +6,6 @@ from typing import (
     NamedTuple,
     Protocol,
     TypeVar,
-    Union,
 )
 
 
@@ -18,11 +17,7 @@ class Connection(Protocol):
         ...
 
 
-StrKind: Literal["StrKind"] = "StrKind"
-IntKind: Literal["IntKind"] = "IntKind"
-BoolKind: Literal["BoolKind"] = "BoolKind"
-
-Kind = Union[StrKind, IntKind, BoolKind]
+Kind = Literal["StrKind", "IntKind", "BoolKind"]
 
 
 class Field(NamedTuple):
@@ -53,4 +48,4 @@ class Storage(Protocol[A]):
         ...
 
 
-StorageMaker = Callable([Connection, Schema], Storage)
+StorageMaker = Callable[[Connection, Schema], Storage]

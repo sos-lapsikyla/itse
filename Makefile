@@ -4,6 +4,6 @@ run:
 lint:
 	poetry run black itse
 	poetry run flake8
-	poetry run mypy
+	poetry run mypy -p itse
 safety-check:
 	poetry run safety check
