@@ -1,11 +1,14 @@
+from dataclasses import dataclass
 from typing import (
     Callable,
     Dict,
+    Generic,
     List,
     Literal,
     NamedTuple,
     Protocol,
     TypeVar,
+    Union,
 )
 
 
@@ -26,26 +29,32 @@ class Field(NamedTuple):
     unique: bool
 
 
-class Schema(NamedTuple):
-    name: str
-    fields: Dict[str, Field]
-
-
 A = TypeVar("A")
 
 
-class Storage(Protocol[A]):
-    async def items(self) -> List[A]:
+Storable = Dict[str, Union[str, int, bool]]
+
+
+@dataclass
+class Schema(Generic[A]):
+    name: str
+    fields: Dict[str, Field]
+    decode: Callable[[Storable], A]
+    encode: Callable[[A], Storable]
+
+
+class Storage(Protocol):
+    async def items(self) -> List[Storable]:
         ...
 
-    async def get(self, identifier: str) -> A:
+    async def get(self, identifier: str) -> Storable:
         ...
 
-    async def add(self, a: A) -> str:
+    async def add(self, a: Storable) -> str:
         ...
 
-    async def update(self, identifier: str, a: A) -> None:
+    async def update(self, identifier: str, a: Storable) -> None:
         ...
 
 
-StorageMaker = Callable[[Connection, Schema], Storage]
+StorageMaker = Callable[[Connection, Schema], Storage[A]]

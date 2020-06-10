@@ -11,6 +11,8 @@ uvicorn = "^0.11.5"
 jinja2 = "^2.11.2"
 aiofiles = "^0.5.0"
 flake8-annotations = "^2.1.0"
+aredis = "^1.1.8"
+pydantic = "^1.5.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
