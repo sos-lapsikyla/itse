@@ -43,18 +43,18 @@ class Schema(Generic[A]):
     encode: Callable[[A], Storable]
 
 
-class Storage(Protocol):
-    async def items(self) -> List[Storable]:
+class Store(Protocol[A]):
+    async def items(self) -> List[A]:
         ...
 
-    async def get(self, identifier: str) -> Storable:
+    async def get(self, identifier: str) -> Option[A]:
         ...
 
-    async def add(self, a: Storable) -> str:
+    async def add(self, a: A) -> str:
         ...
 
-    async def update(self, identifier: str, a: Storable) -> None:
+    async def update(self, identifier: str, a: A) -> None:
         ...
 
 
-StorageMaker = Callable[[Connection, Schema], Storage[A]]
+StoreFactory = Callable[[Connection, Schema[A]], Store[A]]

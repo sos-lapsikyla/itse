@@ -1,30 +1,41 @@
-from typing import Optional
+from typing import Optional, Protocol
 
 from pydantic import BaseModel
 
-from .storage import Field, Schema, Storable, Storage
+from . import storage
 
 
-class User(BaseModel):
+class User(Protocol):
+    login_name: str
+    password_hash: str
+    email: Optional[str]
+
+
+class UserModel(BaseModel, User)
     login_name: str
     password_hash: str
     email: Optional[str] = None
 
 
-def decode(storedData: Storable) -> User:
+def decode(storedData: storage.Storable) -> User:
     return User(**storedData)
 
 
-UserSchema = Schema(
+def encode(user: User) -> storage.Storable:
+    return user.dict()
+
+
+UserSchema = storage.Schema(
     name="user",
     fields={
-        "login_name": Field(kind="StrKind", required=True, unique=True),
-        "password_hash": Field(kind="StrKind", required=True, unique=False),
-        "email": Field(kind="StrKind", required=False, unique=True),
+        "login_name": storage.Field(
+            kind="StrKind", required=True, unique=True
+        ),
+        "password_hash": storage.Field(
+            kind="StrKind", required=True, unique=False
+        ),
+        "email": storage.Field(kind="StrKind", required=False, unique=True),
     },
     decode=decode,
+    encode=encode,
 )
-
-
-# class UserStorage(Storage[User]):
-#     pass

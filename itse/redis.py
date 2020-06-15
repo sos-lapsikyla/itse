@@ -1,7 +1,8 @@
 import random
 import string
+from typing import Any, List, TypeVar
 
-from . import storage
+from . import store
 
 
 # import typing
@@ -17,13 +18,14 @@ def randomString(stringLength: int = 8) -> str:
     letters = string.ascii_lowercase
     return "".join(random.choice(letters) for i in range(stringLength))
 
+
 A = TypeVar("A")
 
 
-class RedisStore(Storage[A]):
-    def __init__(self, client: typing.Any, schema: ):
+class RedisStore(store.Store[A]):
+    def __init__(self, client: Any, schema: store.Schema) -> None:
         self.client = client
-        self.schema
+        self.schema = schema
 
-    def items(self):
+    async def items(self) -> List[A]:
         ...
