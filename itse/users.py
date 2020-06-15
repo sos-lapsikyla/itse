@@ -2,7 +2,7 @@ from typing import Optional, Protocol
 
 from pydantic import BaseModel
 
-from . import storage
+from . import store
 
 
 class User(Protocol):
@@ -11,30 +11,28 @@ class User(Protocol):
     email: Optional[str]
 
 
-class UserModel(BaseModel, User)
+class UserModel(BaseModel, User):
     login_name: str
     password_hash: str
     email: Optional[str] = None
 
 
-def decode(storedData: storage.Storable) -> User:
-    return User(**storedData)
+def decode(storedData: store.Storable) -> User:
+    return UserModel(**storedData)
 
 
-def encode(user: User) -> storage.Storable:
-    return user.dict()
+def encode(user: User) -> store.Storable:
+    return user.__dict__
 
 
-UserSchema = storage.Schema(
+UserSchema = store.Schema(
     name="user",
     fields={
-        "login_name": storage.Field(
-            kind="StrKind", required=True, unique=True
-        ),
-        "password_hash": storage.Field(
+        "login_name": store.Field(kind="StrKind", required=True, unique=True),
+        "password_hash": store.Field(
             kind="StrKind", required=True, unique=False
         ),
-        "email": storage.Field(kind="StrKind", required=False, unique=True),
+        "email": store.Field(kind="StrKind", required=False, unique=True),
     },
     decode=decode,
     encode=encode,

@@ -3,10 +3,13 @@ from typing import (
     Callable,
     Dict,
     Generic,
-    List,
+    Iterable,
     Literal,
     NamedTuple,
+    NewType,
+    Optional,
     Protocol,
+    Tuple,
     TypeVar,
     Union,
 )
@@ -43,18 +46,37 @@ class Schema(Generic[A]):
     encode: Callable[[A], Storable]
 
 
+StoreKey = NewType("StoreKey", str)
+
+
 class Store(Protocol[A]):
-    async def items(self) -> List[A]:
+    async def items(self) -> Iterable[Tuple[StoreKey, A]]:
         ...
 
-    async def get(self, identifier: str) -> Option[A]:
+    async def get(self, key: StoreKey) -> Optional[A]:
         ...
 
-    async def add(self, a: A) -> str:
+    async def add(self, a: A) -> StoreKey:
         ...
 
-    async def update(self, identifier: str, a: A) -> None:
+    async def update(self, key: StoreKey, a: A) -> None:
         ...
+
+
+class StoreError(Exception):
+    """Base class for exceptions in this modulule"""
+
+    ...
+
+
+@dataclass
+class NotFoundInStoreError(StoreError):
+    key: StoreKey
+
+
+@dataclass
+class DecodeError(StoreError):
+    reason: str
 
 
 StoreFactory = Callable[[Connection, Schema[A]], Store[A]]
