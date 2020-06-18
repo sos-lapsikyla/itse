@@ -62,6 +62,9 @@ class Store(Protocol[A]):
     async def update(self, key: StoreKey, a: A) -> None:
         ...
 
+    async def delete(self, key: StoreKey) -> None:
+        ...
+
 
 class StoreError(Exception):
     """Base class for exceptions in this modulule"""

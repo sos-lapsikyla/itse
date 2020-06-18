@@ -23,11 +23,15 @@ class DictStore(Store[A]):
         storable = self.schema.encode(value)
         key = self.last_key + 1
         self.last_key = key
-        self.state[f"{key}"] = storable
+        self.state[key] = storable
         return key
 
     async def update(self, key: StoreKey, value: A) -> None:
         storable = self.schema.encode(value)
         if key not in self.state:
             raise NotFoundInStoreError
-        self.state[f"{key}"] = storable
+        self.state[key] = storable
+
+    async def delete(self, key: StoreKey) -> None:
+        if key in self.state:
+            del self.state[key]
