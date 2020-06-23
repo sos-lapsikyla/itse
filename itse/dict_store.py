@@ -10,7 +10,12 @@ A = TypeVar("A")
 class DictStore(Store[A]):
     schema: Schema[A]
     state: Dict[str, Any] = {}
-    last_key: int = 0
+    index: int = 0
+
+    def _next_key(self) -> str:
+        self.index += 1
+        key = f"{self.index}"
+        return key
 
     async def items(self) -> Iterable[Tuple[StoreKey, A]]:
         return self.state.items()
@@ -21,8 +26,7 @@ class DictStore(Store[A]):
 
     async def add(self, value: A) -> StoreKey:
         storable = self.schema.encode(value)
-        key = self.last_key + 1
-        self.last_key = key
+        key = self._next_key()
         self.state[key] = storable
         return key
 

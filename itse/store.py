@@ -4,12 +4,12 @@ from typing import (
     Dict,
     Generic,
     Iterable,
-    Literal,
     NamedTuple,
     NewType,
     Optional,
     Protocol,
     Tuple,
+    Type,
     TypeVar,
     Union,
 )
@@ -23,27 +23,21 @@ class Connection(Protocol):
         ...
 
 
-Kind = Literal["StrKind", "IntKind", "BoolKind"]
-
-
-class Field(NamedTuple):
-    kind: Kind
-    required: bool
-    unique: bool
-
-
 A = TypeVar("A")
 
 
 Storable = Dict[str, Union[str, int, bool]]
 
 
-@dataclass
-class Schema(Generic[A]):
+class Schema(Protocol[A]):
     name: str
-    fields: Dict[str, Field]
-    decode: Callable[[Storable], A]
-    encode: Callable[[A], Storable]
+    unique_fields: List[str]
+
+    def decode(storable: Storable) -> A:
+        ...
+
+    def encode(a: A) -> Storable:
+        ...
 
 
 StoreKey = NewType("StoreKey", str)
