@@ -1,5 +1,5 @@
 import time
-from typing import Any, List, NamedTuple, Type, TypeVar
+from typing import Protocol, Type
 
 
 class UintError(Exception):
@@ -8,10 +8,6 @@ class UintError(Exception):
 
 class OutOfBoundsError(UintError):
     ...
-
-
-# TODO fix repetition
-# Dunno how to handle dynamic class creation with mypy
 
 
 class Uint64(int):
@@ -35,20 +31,21 @@ class Uint16(int):
         return super(cls, Uint16).__new__(cls, val)
 
 
-def Uint64Id(Uint64):
-    def __new__(
-        cls: Type["Id"], timestamp: Uint32, node_id: Uint16, index: Uint16
-    ) -> Id:
-        val = (timestamp << 32) | (node_id << 16) | index
-        return super(cls, Uint64).__new__(cls, val)
+class Id:
+    def __init__(
+        self, timestamp: Uint32, node_id: Uint16, index: Uint16,
+    ) -> None:
+        self.val: Uint64 = Uint64((timestamp << 32) | (node_id << 16) | index)
 
 
-
-class NodeIdGiver(Protocol):
-    async def gimmeNodeId(self) -> Uint16:
+# TODO define get_node_id just as an async function
+class NodeIdGetter(Protocol):
+    async def get_node_id(self) -> Uint16:
         ...
 
 
 class IdFactory:
-    def __init__(self, idGiverNodeIdGiver) -> None:
-
+    def __init__(self, node_id_getter: NodeIdGetter) -> None:
+        self.node_id_getter = node_id_getter
+        self.last_seen_time = Uint32(int(time.time()))
+        self.index = 0
