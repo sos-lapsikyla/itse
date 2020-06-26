@@ -1,18 +1,17 @@
 from dataclasses import dataclass
 from typing import (
     Callable,
-    Dict,
     Generic,
     Iterable,
-    NamedTuple,
-    NewType,
+    List,
     Optional,
     Protocol,
     Tuple,
     Type,
     TypeVar,
-    Union,
 )
+
+from pydantic import BaseModel
 
 
 class Connection(Protocol):
@@ -23,40 +22,33 @@ class Connection(Protocol):
         ...
 
 
+BaseModelType = TypeVar("BaseModelType", bound=BaseModel)
+
+
+@dataclass(frozen=True)
+class Schema(Generic[BaseModelType]):
+    name: str
+    uniques: List[str]
+    model: Type[BaseModelType]
+
+
 A = TypeVar("A")
 
 
-Storable = Dict[str, Union[str, int, bool]]
-
-
-class Schema(Protocol[A]):
-    name: str
-    unique_fields: List[str]
-
-    def decode(storable: Storable) -> A:
-        ...
-
-    def encode(a: A) -> Storable:
-        ...
-
-
-StoreKey = NewType("StoreKey", str)
-
-
 class Store(Protocol[A]):
-    async def items(self) -> Iterable[Tuple[StoreKey, A]]:
+    async def items(self) -> Iterable[Tuple[str, A]]:
         ...
 
-    async def get(self, key: StoreKey) -> Optional[A]:
+    async def get(self, key: str) -> Optional[A]:
         ...
 
-    async def add(self, a: A) -> StoreKey:
+    async def add(self, a: A) -> str:
         ...
 
-    async def update(self, key: StoreKey, a: A) -> None:
+    async def update(self, key: str, a: A) -> None:
         ...
 
-    async def delete(self, key: StoreKey) -> None:
+    async def delete(self, key: str) -> None:
         ...
 
 
@@ -66,14 +58,9 @@ class StoreError(Exception):
     ...
 
 
-@dataclass
-class NotFoundInStoreError(StoreError):
-    key: StoreKey
+@dataclass()
+class DuplicateUniqueFieldsError(StoreError):
+    fields: List[str]
 
 
-@dataclass
-class DecodeError(StoreError):
-    reason: str
-
-
-StoreFactory = Callable[[Connection, Schema[A]], Store[A]]
+StoreFactory = Callable[[Connection, Schema], Store[A]]
