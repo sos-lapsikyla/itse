@@ -59,8 +59,6 @@ class DictStore(Store[A]):
 
     async def update(self, key: str, item: A) -> None:
         storable = item.dict()
-        if key not in self.state:
-            raise NotFoundInStoreError
         self.state[key] = storable
 
     async def delete(self, key: str) -> None:
